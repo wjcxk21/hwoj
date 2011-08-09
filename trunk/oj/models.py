@@ -37,11 +37,17 @@ class Problem(models.Model):
     source_url = models.URLField(null=True, blank=True)
     created_time = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
+    
+    def __unicode__(self):
+        return "[%s] %s" % self.id, self.title
 
 class ProblemAttribute(models.Model):
     problem = models.ForeignKey(Problem, related_name='attributes')
     key = models.CharField(max_length=100)
     value = models.CharField(max_length=255)
+    
+    def __unicode__(self):
+        return "%s.%s" % self.problem.id, self.key
     
 class Comment(models.Model):
     author = models.ForeignKey(User, related_name='comments')
@@ -52,24 +58,36 @@ class Comment(models.Model):
     agreement = models.IntegerField(default=0)
     disagreement = models.IntegerField(default=0)
     
+    def __unicode__(self):
+        return "[%s] %s" % self.author.username, self.content
+    
 class CommentAttachment(models.Model):
     comment = models.ForeignKey(Comment, related_name='attachments')
     file = models.FileField(upload_to='attachments')
     filename = models.CharField(max_length=255)
     size = models.IntegerField()
-
+    
+    def __unicode__(self):
+        return self.filename
+        
 class Team(models.Model):
     name = models.CharField(max_length=255, unique=True)
     intro = models.TextField(null=True, blank=True)
     created_time = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(User, related_name='teams')
     
+    def __unicode__(self):
+        return self.name
+
 class Language(models.Model):
     name = models.CharField(max_length=50, unique=True)
     short_name = models.CharField(max_length=50, unique=True)
     time_mul = models.FloatField(default=1.0)
     memory_mul = models.FloatField(default=1.0)
     extensions = models.CharField(max_length=255)
+    
+    def __unicode__(self):
+        return self.name
     
 class Contest(models.Model):
     TYPE_CHOICES = (
@@ -93,6 +111,9 @@ class Contest(models.Model):
     problems = models.ManyToManyField(Problem, related_name='contests')
     languages = models.ManyToManyField(Language, related_name='+')
     
+    def __unicode__(self):
+        return self.name
+    
 class ContestUser(models.Model):
     APPROVED_CHOICES = (
         (0, u'Pending'),
@@ -105,6 +126,9 @@ class ContestUser(models.Model):
     join_time = models.DateTimeField(auto_now_add=True)
     approved = models.IntegerField(choices=APPROVED_CHOICES, default=0)
 
+    def __unicode__(self):
+        return "%s -> %s" % self.contest.name, self.user.username
+
 class ContestTeam(models.Model):
     APPROVED_CHOICES = (
         (0, u'Pending'),
@@ -116,6 +140,9 @@ class ContestTeam(models.Model):
     team = models.ForeignKey(Team, related_name='team_contests')
     join_time = models.DateTimeField(auto_now_add=True)
     approved = models.IntegerField(choices=APPROVED_CHOICES, default=0)
+
+    def __unicode__(self):
+        return "%s -> %s" % self.contest.name, self.team.name
     
 class Submission(models.Model):
     STATUS_CHOICES = (
@@ -147,10 +174,16 @@ class Submission(models.Model):
     update_time = models.DateTimeField(auto_now=True)
     locked = models.BooleanField(default=False)
     judger = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.id
     
 class Settings(models.Model):
     key = models.CharField(max_length=100)
     value = models.CharField(max_length=255)
+    
+    def __unicode__(self):
+        return "%s = %s" % self.key, self.value
 
 class UserProfile(models.Model):
     GENDER_CHOICES = (
@@ -167,3 +200,7 @@ class UserProfile(models.Model):
     thumb_48 = models.ImageField(upload_to='profile/thumb48', null=True, blank=True, editable=False)
     thumb_96 = models.ImageField(upload_to='profile/thumb96', null=True, blank=True, editable=False)
     starred_problems = models.ManyToManyField(Problem, related_name='+')
+
+    def __unicode__(self):
+        return "%s Profile" % self.user.username
+    
