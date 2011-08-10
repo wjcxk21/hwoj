@@ -4,9 +4,9 @@ import socket
 # Django settings for hwoj project.
 
 if socket.gethostname() == 'hwoj':
-    DEBUG = True
-else:
     DEBUG = False
+else:
+    DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -18,7 +18,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql',               # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.mysql',
+                                         # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'hwoj',                  # Or path to database file if using sqlite3.
         'USER': 'hwoj',                  # Not used with sqlite3.
         'PASSWORD': 'hwoj',              # Not used with sqlite3.
@@ -51,11 +52,11 @@ USE_I18N = True
 USE_L10N = True
 
 # Use following SITE_ROOT to avoid hard-coded directories.
-SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+ROOTDIR = os.path.realpath(os.path.dirname(__file__))
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
+MEDIA_ROOT = os.path.join(ROOTDIR, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -66,7 +67,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+STATIC_ROOT = os.path.join(ROOTDIR, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -116,6 +117,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(ROOTDIR, 'oj/templates'),
 )
 
 INSTALLED_APPS = (
@@ -126,9 +128,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
+    'hwoj.oj',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -153,3 +156,6 @@ LOGGING = {
         },
     }
 }
+
+# Add user profile
+AUTH_PROFILE_MODULE = 'oj.UserProfile'
