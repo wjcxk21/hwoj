@@ -23,9 +23,9 @@ class Problem(models.Model):
     hint = models.TextField(null=True, blank=True)
     input_format = models.TextField()
     output_format = models.TextField()
-    input_sample = models.TextField()
+    input_sample = models.TextField(null=True)
     output_sample = models.TextField()
-    input_judge = models.TextField()
+    input_judge = models.TextField(null=True)
     output_judge = models.TextField()
     time_limit = models.IntegerField()
     memory_limit = models.IntegerField()
@@ -39,7 +39,7 @@ class Problem(models.Model):
     approved = models.BooleanField(default=False)
     
     def __unicode__(self):
-        return "[%s] %s" % self.id, self.title
+        return "[%s] %s" % (self.id, self.title)
 
 class ProblemAttribute(models.Model):
     problem = models.ForeignKey(Problem, related_name='attributes')
@@ -47,7 +47,7 @@ class ProblemAttribute(models.Model):
     value = models.CharField(max_length=255)
     
     def __unicode__(self):
-        return "%s.%s" % self.problem.id, self.key
+        return "%s.%s" % (self.problem.id, self.key)
     
 class Comment(models.Model):
     author = models.ForeignKey(User, related_name='comments')
@@ -59,7 +59,7 @@ class Comment(models.Model):
     disagreement = models.IntegerField(default=0)
     
     def __unicode__(self):
-        return "[%s] %s" % self.author.username, self.content
+        return "[%s] %s" % (self.author.username, self.content)
     
 class CommentAttachment(models.Model):
     comment = models.ForeignKey(Comment, related_name='attachments')
@@ -127,7 +127,7 @@ class ContestUser(models.Model):
     approved = models.IntegerField(choices=APPROVED_CHOICES, default=0)
 
     def __unicode__(self):
-        return "%s -> %s" % self.contest.name, self.user.username
+        return "%s -> %s" % (self.contest.name, self.user.username)
 
 class ContestTeam(models.Model):
     APPROVED_CHOICES = (
@@ -142,7 +142,7 @@ class ContestTeam(models.Model):
     approved = models.IntegerField(choices=APPROVED_CHOICES, default=0)
 
     def __unicode__(self):
-        return "%s -> %s" % self.contest.name, self.team.name
+        return "%s -> %s" % (self.contest.name, self.team.name)
     
 class Submission(models.Model):
     STATUS_CHOICES = (
@@ -183,7 +183,7 @@ class Settings(models.Model):
     value = models.CharField(max_length=255)
     
     def __unicode__(self):
-        return "%s = %s" % self.key, self.value
+        return "%s = %s" % (self.key, self.value)
 
 class UserProfile(models.Model):
     GENDER_CHOICES = (
