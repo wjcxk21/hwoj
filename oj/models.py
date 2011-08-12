@@ -93,6 +93,7 @@ class Team(models.Model):
 class Language(models.Model):
     name = models.CharField(max_length=50, unique=True)
     short_name = models.CharField(max_length=50, unique=True)
+    type_id = models.IntegerField(default=1, unique=True)
     time_mul = models.FloatField(default=1.0)
     memory_mul = models.FloatField(default=1.0)
     extensions = models.CharField(max_length=255)
@@ -165,11 +166,12 @@ class Judge(models.Model):
         (1, u'Running'),
         (2, u'Unknown'),
     )
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     hostname = models.CharField(max_length=255)
     ip = models.IPAddressField(null=True, blank=True)
     status = models.IntegerField(choices=JUDGE_STATUS, default=0)
     last_run = models.DateTimeField(auto_now=True)
+    stop_requested = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "%s@%s" % (self.name, self.hostname)
@@ -184,12 +186,18 @@ class Submission(models.Model):
     )
     RESULT_CHOICES = (
         (0, u'None'),
-        (1, u'Accepted'),
+        (1, u'Denied'),
+        (2, u'Accepted'),
         # TODO
     )
     ERROR_CHOICES = (
         (0, u'None'),
-        (1, u'Stack Overflow'),
+        (1, u'Complation Failed'),
+        (2, u'Execution Failed'),
+        (3, u'Compare Failed'),
+        (4, u"Timemout"),
+        (5, u'Killed'),
+        (6, u'Stack Overflow'),
         # TODO
     )
     problem = models.ForeignKey(Problem, related_name='submissions')
@@ -204,7 +212,7 @@ class Submission(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     locked = models.BooleanField(default=False)
-    judge = models.ForeignKey(Judge)
+    judge = models.ForeignKey(Judge, null=True)
 
     def __unicode__(self):
         return unicode(self.id)
