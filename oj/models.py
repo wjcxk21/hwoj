@@ -181,23 +181,33 @@ class Submission(models.Model):
     STATUS_CHOICES = (
         (0, u'Queueing'),
         (1, u'Compiling'),
-        (2, u'Judging'),
+        (2, u'Running'),
         (3, u'Completed'),
     )
     RESULT_CHOICES = (
         (0, u'None'),
-        (1, u'Denied'),
-        (2, u'Accepted'),
+        (1, u'AC(Accepted)'),
+        (2, u'PE(Presentation Error)'),
+        (3, u'TLE(Time Limit Exceeded)'),
+        (4, u'MLE(Memory Limit Exceeded)'),
+        (5, u'WA(Wrong Answer)'),
+        (6, u'RE(Runtime Error)'),
+        (7, u'OLE(Output Limit Exceeded)'),
+        (8, u'CE(Compilation Error)'),
+        (9, u'SE(System Error)'),
+        (10, u'Other'),
         # TODO
     )
     ERROR_CHOICES = (
+        # mainly used for runtime errors
         (0, u'None'),
-        (1, u'Complation Failed'),
-        (2, u'Execution Failed'),
-        (3, u'Compare Failed'),
-        (4, u"Timemout"),
-        (5, u'Killed'),
-        (6, u'Stack Overflow'),
+        (1, u'Access Violation'),
+        (2, u'Array Bounds Exceeded'),
+        (3, u'Float Denormal Oprand'),
+        (4, u'Division By Zero'),
+        (5, u'Number Overflow'),
+        (6, u'Number Undervlow'),
+        (7, u'Stack Overflow'),
         # TODO
     )
     problem = models.ForeignKey(Problem, related_name='submissions')
